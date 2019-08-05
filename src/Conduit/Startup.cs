@@ -143,11 +143,10 @@ namespace Conduit
 
             app.ApplicationServices.GetRequiredService<ConduitContext>().Database.EnsureCreated();
 
-            app.Run(context =>
+            app.Run(async context =>
             {
-                return new Task(() => {
-                    context.Response.Redirect("./swagger", true);
-                });
+                context.Response.Redirect("./swagger", false);
+                await context.Response.WriteAsync("Redirecting...");
             });
         }
     }
