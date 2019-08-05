@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Linq;
 
 namespace Conduit
@@ -141,6 +142,13 @@ namespace Conduit
             });
 
             app.ApplicationServices.GetRequiredService<ConduitContext>().Database.EnsureCreated();
+
+            app.Run(async context =>
+            {
+                await new Task(() => {
+                    context.Response.Redirect("./swagger", true);
+                });
+            });
         }
     }
 }
