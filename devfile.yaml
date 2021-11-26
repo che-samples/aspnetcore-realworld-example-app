@@ -1,0 +1,57 @@
+schemaVersion: 2.1.0
+metadata:
+  name: asp.net
+attributes:
+  che-theia.eclipse.org/sidecar-policy: USE_DEV_CONTAINER
+components:
+
+  - name: tools
+    container:
+      image: quay.io/devfile/universal-developer-image:ubi8-latest
+      memoryLimit: 3Gi
+      endpoints:
+        - exposure: public
+          name: aspnet
+          protocol: http
+          targetPort: 5000
+      volumeMounts:
+        - name: nuget
+          path: /home/user/.nuget
+
+  - name: nuget
+    volume:
+      size: 1G
+  
+commands:
+  - id: install-cake
+    exec:
+      component: tools
+      workingDir: ${PROJECTS_ROOT}/aspnetcore-realworld-example-app
+      commandLine: dotnet tool install -g Cake.Tool
+      group:
+        kind: build
+
+  - id: build
+    exec:
+      component: tools
+      workingDir: ${PROJECTS_ROOT}/aspnetcore-realworld-example-app
+      commandLine: /home/user/.dotnet/tools/dotnet-cake --runtime=linux-x64
+      group:
+        kind: build
+  
+  - id: re-build
+    exec:
+      component: tools
+      workingDir: ${PROJECTS_ROOT}/aspnetcore-realworld-example-app
+      commandLine: /home/user/.dotnet/tools/dotnet-cake --target=Rebuild --runtime=linux-x64
+      group:
+        kind: build
+
+
+  - id: run-server
+    exec:
+      component: tools
+      workingDir: ${PROJECTS_ROOT}/aspnetcore-realworld-example-app
+      commandLine: dotnet run --project src/Conduit/Conduit.csproj
+      group:
+        kind: run
