@@ -2,7 +2,7 @@ schemaVersion: 2.1.0
 metadata:
   name: asp.net
 attributes:
-  che-theia.eclipse.org/sidecar-policy: MERGE_IMAGE
+  che-theia.eclipse.org/sidecar-policy: USE_DEV_CONTAINER
 components:
 
   - name: tools
