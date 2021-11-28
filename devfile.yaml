@@ -17,11 +17,16 @@ components:
       volumeMounts:
         - name: nuget
           path: /home/user/.nuget
+        - name: dotnet
+          path: /home/user/.dotnet
 
   - name: nuget
     volume:
       size: 1G
-  
+  - name: dotnet
+    volume:
+      size: 1G
+
 commands:
   - id: install-cake
     exec:
