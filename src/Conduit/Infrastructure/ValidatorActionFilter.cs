@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace Conduit.Infrastructure
 {
@@ -28,7 +28,7 @@ namespace Conduit.Infrastructure
                     errors.Add(valuePair.Key, valuePair.Value.Errors.Select(x => x.ErrorMessage).ToArray());
                 }
 
-                string content = JsonConvert.SerializeObject(new { errors });
+                string content = JsonSerializer.Serialize(new { errors });
                 result.Content = content;
                 result.ContentType = "application/json";
 

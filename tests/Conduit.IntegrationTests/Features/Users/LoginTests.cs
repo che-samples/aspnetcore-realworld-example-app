@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Conduit.Domain;
 using Conduit.Features.Users;
@@ -17,19 +17,16 @@ namespace Conduit.IntegrationTests.Features.Users
             {
                 Username = "username",
                 Email = "email",
-                Hash = new PasswordHasher().Hash("password", salt),
+                Hash = await new PasswordHasher().Hash("password", salt),
                 Salt = salt
             };
             await InsertAsync(person);
 
-            var command = new Conduit.Features.Users.Login.Command()
+            var command = new Login.Command(new Login.UserData()
             {
-                User = new Login.UserData()
-                {
-                    Email = "email",
-                    Password = "password"
-                }
-            };
+                Email = "email",
+                Password = "password"
+            });
 
             var user = await SendAsync(command);
 

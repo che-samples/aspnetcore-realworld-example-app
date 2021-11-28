@@ -1,6 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Conduit.Features.Users;
 
@@ -17,15 +14,12 @@ namespace Conduit.IntegrationTests.Features.Users
         /// <returns></returns>
         public static async Task<User> CreateDefaultUser(SliceFixture fixture)
         {
-            var command = new Create.Command()
+            var command = new Create.Command(new Create.UserData()
             {
-                User = new Create.UserData()
-                {
-                    Email = "email",
-                    Password = "password",
-                    Username = DefaultUserName
-                }
-            };
+                Email = "email",
+                Password = "password",
+                Username = DefaultUserName
+            });
 
             var commandResult = await fixture.SendAsync(command);
             return commandResult.User;

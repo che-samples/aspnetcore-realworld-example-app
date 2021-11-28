@@ -1,7 +1,10 @@
-﻿namespace Conduit.Infrastructure.Security
+using System;
+using System.Threading.Tasks;
+
+namespace Conduit.Infrastructure.Security
 {
-    public interface IPasswordHasher
+    public interface IPasswordHasher : IDisposable
     {
-        byte[] Hash(string password, byte[] salt);
+        Task<byte[]> Hash(string password, byte[] salt);
     }
 }
