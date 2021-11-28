@@ -7,7 +7,7 @@ components:
 
   - name: tools
     container:
-      image: vsvydenko/udi:dotnet
+      image: quay.io/devfile/universal-developer-image:ubi8-latest
       memoryLimit: 3Gi
       endpoints:
         - exposure: public
@@ -35,19 +35,10 @@ commands:
     exec:
       component: tools
       workingDir: ${PROJECTS_ROOT}/aspnetcore-realworld-example-app
-      commandLine: /home/user/.dotnet/tools/dotnet-cake --runtime=linux-x64
+      commandLine: dotnet run -p build/build.csproj
       group:
         kind: build
   
-  - id: re-build
-    exec:
-      component: tools
-      workingDir: ${PROJECTS_ROOT}/aspnetcore-realworld-example-app
-      commandLine: /home/user/.dotnet/tools/dotnet-cake --target=Rebuild --runtime=linux-x64
-      group:
-        kind: build
-
-
   - id: run-server
     exec:
       component: tools
