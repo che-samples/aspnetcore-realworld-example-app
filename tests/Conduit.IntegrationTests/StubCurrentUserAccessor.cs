@@ -1,7 +1,4 @@
-﻿using Conduit.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Conduit.Infrastructure;
 
 namespace Conduit.IntegrationTests
 {

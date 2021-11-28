@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +8,7 @@ using MediatR;
 namespace Conduit.Infrastructure
 {
     public class ValidationPipelineBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+        where TRequest : notnull
     {
         private readonly List<IValidator<TRequest>> _validators;
 
@@ -18,7 +19,7 @@ namespace Conduit.Infrastructure
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            var context = new ValidationContext(request);
+            var context = new ValidationContext<TRequest>(request);
             var failures = _validators
                 .Select(v => v.Validate(context))
                 .SelectMany(result => result.Errors)

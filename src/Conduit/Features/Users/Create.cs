@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -18,33 +18,22 @@ namespace Conduit.Features.Users
     {
         public class UserData
         {
-            public string Username { get; set; }
+            public string? Username { get; set; }
 
-            public string Email { get; set; }
+            public string? Email { get; set; }
 
-            public string Password { get; set; }
+            public string? Password { get; set; }
         }
 
-        public class UserDataValidator : AbstractValidator<UserData>
-        {
-            public UserDataValidator()
-            {
-                RuleFor(x => x.Username).NotNull().NotEmpty();
-                RuleFor(x => x.Email).NotNull().NotEmpty();
-                RuleFor(x => x.Password).NotNull().NotEmpty();
-            }
-        }
-
-        public class Command : IRequest<UserEnvelope>
-        {
-            public UserData User { get; set; }
-        }
+        public record Command(UserData User) : IRequest<UserEnvelope>;
 
         public class CommandValidator : AbstractValidator<Command>
         {
             public CommandValidator()
             {
-                RuleFor(x => x.User).NotNull().SetValidator(new UserDataValidator());
+                RuleFor(x => x.User.Username).NotNull().NotEmpty();
+                RuleFor(x => x.User.Email).NotNull().NotEmpty();
+                RuleFor(x => x.User.Password).NotNull().NotEmpty();
             }
         }
 
@@ -80,14 +69,15 @@ namespace Conduit.Features.Users
                 {
                     Username = message.User.Username,
                     Email = message.User.Email,
-                    Hash = _passwordHasher.Hash(message.User.Password, salt),
+                    Hash = await _passwordHasher.Hash(message.User.Password ?? throw new InvalidOperationException(), salt),
                     Salt = salt
                 };
 
-                _context.Persons.Add(person);
+                await _context.Persons.AddAsync(person, cancellationToken);
                 await _context.SaveChangesAsync(cancellationToken);
-                var user = _mapper.Map<Domain.Person, User>(person);
-                user.Token = await _jwtTokenGenerator.CreateToken(person.Username);
+
+                var user = _mapper.Map<Person, User>(person);
+                user.Token = _jwtTokenGenerator.CreateToken(person.Username ?? throw new InvalidOperationException());
                 return new UserEnvelope(user);
             }
         }

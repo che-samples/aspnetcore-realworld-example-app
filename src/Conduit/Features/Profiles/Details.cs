@@ -7,16 +7,13 @@ namespace Conduit.Features.Profiles
 {
     public class Details
     {
-        public class Query : IRequest<ProfileEnvelope>
-        {
-            public string Username { get; set; }
-        }
+        public record Query(string Username) : IRequest<ProfileEnvelope>;
 
         public class QueryValidator : AbstractValidator<Query>
         {
             public QueryValidator()
             {
-                RuleFor(x => x.Username).NotNull().NotEmpty();
+                RuleFor(x => x.Username).NotEmpty();
             }
         }
 
@@ -29,9 +26,9 @@ namespace Conduit.Features.Profiles
                 _profileReader = profileReader;
             }
 
-            public async Task<ProfileEnvelope> Handle(Query message, CancellationToken cancellationToken)
+            public Task<ProfileEnvelope> Handle(Query message, CancellationToken cancellationToken)
             {
-                return await _profileReader.ReadProfile(message.Username);
+                return _profileReader.ReadProfile(message.Username, cancellationToken);
             }
         }
     }

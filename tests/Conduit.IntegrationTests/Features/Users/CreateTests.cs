@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading.Tasks;
 using Conduit.Features.Users;
 using Conduit.Infrastructure.Security;
@@ -12,22 +12,19 @@ namespace Conduit.IntegrationTests.Features.Users
         [Fact]
         public async Task Expect_Create_User()
         {
-            var command = new Conduit.Features.Users.Create.Command()
+            var command = new Create.Command(new Create.UserData()
             {
-                User = new Create.UserData()
-                {
-                    Email = "email",
-                    Password = "password",
-                    Username = "username"
-                }
-            };
+                Email = "email",
+                Password = "password",
+                Username = "username"
+            });
 
             await SendAsync(command);
 
             var created = await ExecuteDbContextAsync(db => db.Persons.Where(d => d.Email == command.User.Email).SingleOrDefaultAsync());
 
             Assert.NotNull(created);
-            Assert.Equal(created.Hash, new PasswordHasher().Hash("password", created.Salt));
+            Assert.Equal(created.Hash, await new PasswordHasher().Hash("password", created.Salt));
         }
     }
 }

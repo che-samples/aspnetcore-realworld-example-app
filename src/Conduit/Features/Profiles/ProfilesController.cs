@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -15,12 +16,9 @@ namespace Conduit.Features.Profiles
         }
 
         [HttpGet("{username}")]
-        public async Task<ProfileEnvelope> Get(string username)
+        public Task<ProfileEnvelope> Get(string username, CancellationToken cancellationToken)
         {
-            return await _mediator.Send(new Profiles.Details.Query()
-            {
-                Username = username
-            });
+            return _mediator.Send(new Details.Query(username), cancellationToken);
         }
     }
 }
