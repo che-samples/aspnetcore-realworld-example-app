@@ -3,6 +3,6 @@
     // for the documentation about the extensions.json format
     "recommendations": [
       "muhammad-sammy.csharp",
-      "vscode.typescript-language-features"
+      "redhat.vscode-xml"
     ]
 }
