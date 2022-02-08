@@ -2,10 +2,9 @@ schemaVersion: 2.1.0
 metadata:
   name: asp-net
 components:
-
   - name: tools
     container:
-      image: quay.io/devfile/universal-developer-image:ubi8-latest
+      image: quay.io/devfile/universal-developer-image:ubi8-0e189d9
       memoryLimit: 3Gi
       endpoints:
         - exposure: public
@@ -21,6 +20,7 @@ components:
   - name: nuget
     volume:
       size: 1G
+
   - name: dotnet
     volume:
       size: 1G
@@ -29,7 +29,7 @@ commands:
   - id: install-cake
     exec:
       component: tools
-      workingDir: ${PROJECTS_ROOT}/aspnetcore-realworld-example-app
+      workingDir: ${PROJECT_SOURCE}
       commandLine: dotnet tool install -g Cake.Tool
       group:
         kind: build
@@ -37,15 +37,15 @@ commands:
   - id: build
     exec:
       component: tools
-      workingDir: ${PROJECTS_ROOT}/aspnetcore-realworld-example-app
+      workingDir: ${PROJECT_SOURCE}
       commandLine: dotnet run -p build/build.csproj
       group:
         kind: build
-  
+
   - id: run-server
     exec:
       component: tools
-      workingDir: ${PROJECTS_ROOT}/aspnetcore-realworld-example-app
+      workingDir: ${PROJECT_SOURCE}
       commandLine: dotnet run --project src/Conduit/Conduit.csproj
       group:
         kind: run
